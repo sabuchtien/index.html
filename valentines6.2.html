@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>💌My Valentine💌</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500&display=swap');
+
+body {
+  margin: 0;
+  height: 100vh;
+  background: linear-gradient(135deg, #f7c6d9, #f2a9c2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  color: #5a1a2c;
+  font-family: Playfair Display, serif;
+}
+
+/* Counter */
+.counter {
+  position: fixed;
+  top: 18px;
+  right: 22px;
+  font-size: 18px;
+  background: rgba(255,255,255,0.6);
+  padding: 8px 14px;
+  border-radius: 20px;
+  display: none;
+  z-index: 20;
+}
+
+/* BOOK */
+.book {
+  width: 620px;
+  height: 420px;
+  perspective: 2200px;
+}
+
+/* Page */
+.page {
+  width: 100%;
+  height: 100%;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(255,255,255,0.96),
+    rgba(255,255,255,0.96) 2px,
+    rgba(255,255,255,0.94) 4px
+  );
+  border-radius: 18px;
+  box-shadow: 0 20px 45px rgba(0,0,0,0.3);
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  transform-origin: left;
+  transition: transform 1.3s ease;
+  padding: 55px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#inside { transform: rotateY(-180deg); }
+.book.open #front { transform: rotateY(-180deg); }
+.book.open #inside { transform: rotateY(0deg); }
+
+/* Text */
+h1 { font-size: 46px; margin-bottom: 25px; }
+.handwritten { font-size: 34px; min-height: 120px; }
+
+/* Buttons */
+button {
+  font-size: 22px;
+  padding: 14px 34px;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+#yes { background: #7b0d1e; color: white; display: none; }
+#no {
+  background: #e6e6e6;
+  color: #444;
+  position: fixed;
+  display: none;
+}
+
+/* Falling emojis */
+.fall {
+  position: absolute;
+  top: -50px;
+  pointer-events: none;
+  animation-timing-function: linear;
+}
+@keyframes fall {
+  to {
+    transform: translateY(110vh) rotate(360deg);
+    opacity: 0;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="counter">How many times you've broken my heart: <span id="count">0</span></div>
+
+<div class="book" id="book">
+  <div class="page" id="front">
+    <h1>Hello, my love 🧸</h1>
+    <button onclick="openBook()">Open ➜</button>
+  </div>
+
+  <div class="page" id="inside">
+    <div class="handwritten" id="typedText"></div>
+    <button id="yes" onclick="sayYes()">Yes❣️</button>
+  </div>
+</div>
+
+<button id="no">No 💔</button>
+
+<script>
+const text = "Jona, will you be my Valentines?";
+let index = 0;
+let noCount = 0;
+
+const typed = document.getElementById("typedText");
+const yesBtn = document.getElementById("yes");
+const noBtn = document.getElementById("no");
+const counter = document.querySelector(".counter");
+
+function openBook() {
+  document.getElementById("book").classList.add("open");
+  setTimeout(typeText, 800);
+}
+
+function typeText() {
+  if (index < text.length) {
+    typed.innerHTML += text[index++];
+    setTimeout(typeText, 70);
+  } else {
+    yesBtn.style.display = "inline-block";
+    noBtn.style.display = "block";
+    counter.style.display = "block";
+    positionNo();
+  }
+}
+
+function positionNo() {
+  const rect = yesBtn.getBoundingClientRect();
+  noBtn.style.left = rect.left + "px";
+  noBtn.style.top = rect.bottom + 15 + "px";
+}
+
+noBtn.addEventListener("mouseenter", () => {
+  noCount++;
+  document.getElementById("count").textContent = noCount;
+  noBtn.style.left = Math.random() * (window.innerWidth - 120) + "px";
+  noBtn.style.top = Math.random() * (window.innerHeight - 60) + "px";
+});
+
+function sayYes() {
+  document.body.innerHTML = `
+    <div style="text-align:center;">
+      <h1 style="font-size:56px;">YAYYYY 🎉</h1>
+      <p style="font-size:26px;">See you February 14th 💘</p>
+      <div id="countdown" style="font-size:22px;margin-top:10px;"></div>
+    </div>
+  `;
+
+  startCountdown();
+  startCelebration();
+}
+
+// Continuous falling emojis
+function startCelebration() {
+  const emojis = ["🧸","💌","😻","❣️"];
+
+  function createEmoji() {
+    const el = document.createElement("div");
+    el.className = "fall";
+    el.innerHTML = emojis[Math.floor(Math.random() * emojis.length)];
+    el.style.left = Math.random() * 100 + "vw";
+    el.style.fontSize = (20 + Math.random() * 50) + "px";
+    const duration = (2 + Math.random() * 5) + "s";
+    el.style.animation = `fall ${duration} linear`;
+    document.body.appendChild(el);
+
+    setTimeout(() => el.remove(), duration * 1000); // remove after animation
+  }
+
+  setInterval(createEmoji, 300); // spawn continuously
+}
+
+function startCountdown() {
+  const target = new Date("2026-02-14T00:00:00");
+  setInterval(() => {
+    const now = new Date();
+    const diff = target - now;
+    const d = Math.floor(diff / 86400000);
+    const h = Math.floor(diff / 3600000) % 24;
+    const m = Math.floor(diff / 60000) % 60;
+    const s = Math.floor(diff / 1000) % 60;
+    document.getElementById("countdown").innerHTML =
+      `${d} days ${h} hours ${m} minutes ${s} seconds 💕`;
+  }, 1000);
+}
+</script>
+
+</body>
+</html>
