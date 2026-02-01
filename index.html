@@ -70,7 +70,11 @@ body {
 
 /* Text */
 h1 { font-size: 46px; margin-bottom: 25px; }
-.handwritten { font-family: 'Great Vibes', cursive; font-size: 34px; min-height: 120px; }
+.handwritten {
+  font-family: 'Great Vibes', cursive;
+  font-size: 34px;
+  min-height: 120px;
+}
 
 /* Buttons */
 button {
@@ -82,37 +86,17 @@ button {
   margin-top: 20px;
 }
 
-#yes { background: #7b0d1e; color: white; display: none; }
+#yes {
+  background: #7b0d1e;
+  color: white;
+  display: none;
+}
+
 #no {
   background: #e6e6e6;
   color: #444;
   position: fixed;
   display: none;
-}
-
-/* Falling emojis */
-.fall {
-  position: absolute;
-  top: -60px;
-  pointer-events: none;
-  animation-name: fall;
-  animation-timing-function: linear;
-  animation-fill-mode: forwards;
-  opacity: 0;
-}
-
-@keyframes fall {
-  0% {
-    transform: translate(0, 0) rotate(0deg);
-    opacity: 0;
-  }
-  10% {
-    opacity: 1;
-  }
-  100% {
-    transform: translate(var(--drift), 110vh) rotate(360deg);
-    opacity: 0;
-  }
 }
 </style>
 </head>
@@ -187,35 +171,6 @@ function sayYes() {
     </div>
   `;
   startCountdown();
-  startCelebration();
-}
-
-/* 🎉 Emoji celebration */
-function startCelebration() {
-  const emojis = ["🧸", "💌", "❣️"];
-
-  function createEmoji() {
-    const el = document.createElement("div");
-    el.className = "fall";
-    el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
-
-    el.style.left = Math.random() * 100 + "vw";
-    el.style.fontSize = (20 + Math.random() * 50) + "px";
-
-    const duration = 3 + Math.random() * 5; // different fall speeds
-    const delay = Math.random() * 2;        // staggered delays
-    const drift = (Math.random() * 120 - 60) + "px"; // sideways drift
-
-    el.style.animationDuration = duration + "s";
-    el.style.animationDelay = delay + "s";
-    el.style.setProperty("--drift", drift);
-
-    document.body.appendChild(el);
-
-    setTimeout(() => el.remove(), (duration + delay) * 1000);
-  }
-
-  setInterval(createEmoji, 250);
 }
 
 function startCountdown() {
@@ -235,4 +190,5 @@ function startCountdown() {
 
 </body>
 </html>
+
 
